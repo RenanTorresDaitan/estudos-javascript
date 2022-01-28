@@ -14,14 +14,19 @@ console.log(
 );
 
 function isEven(number) {
+  let even = false;
   let positiveNumber = Math.abs(number);
-  if (positiveNumber === 0) {
-    return `The number ${number} is Even`;
-  } else if (positiveNumber === 1) {
-    return `The number ${number} is Odd`;
-  } else {
-    return isEven(positiveNumber - 2);
+  function findEvenness(num) {
+    if (num === 0) {
+      even = true;
+    } else if (num === 1) {
+      even = false;
+    } else {
+      return findEvenness(num - 2);
+    }
   }
+  findEvenness(positiveNumber);
+  return `The number ${number} is ${even ? "Even":"Odd"}`
 }
 
 console.log(isEven(75));
