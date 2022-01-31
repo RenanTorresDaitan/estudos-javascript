@@ -50,3 +50,29 @@ let arrayValue = [1, 2, 3, 4, 5];
 reverseArrayInPlace(arrayValue);
 console.log("reverseArrayInPlace([1,2,3,4,5])");
 console.log(arrayValue);
+
+console.log("\n Converting an Array to a List \n");
+function arrayToList(arr) {
+  let list = null;
+  for (let i = arr.length - 1; i >= 0; i--) {
+    list = {
+      value: arr[i],
+      rest: list,
+    };
+  }
+  return list;
+}
+
+console.log("arrayToList([10, 20])");
+console.log(arrayToList([10, 20]));
+
+function listToArray(list) {
+  let arr = [];
+  for (let node = list; node; node = node.rest) {
+    arr.push(node.value);
+  }
+  return arr;
+}
+
+console.log("listToArray(arrayToList([10, 20, 30]))");
+console.log(listToArray(arrayToList([10, 20, 30])));
