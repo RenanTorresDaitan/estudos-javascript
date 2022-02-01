@@ -87,3 +87,14 @@ const prepend = (element, list) => {
 }
 console.log("(prepend(10, prepend(20, null)))");
 console.log(prepend(10, prepend(20, null)));
+
+const nth = (list, number) => {
+  let position = -1;
+  for (let node = list; node; node = node.rest) {
+    position++;
+    if (position === number) { return node.value }
+  }
+}
+
+console.log("nth(arrayToList([10, 20, 30]), 1)");
+console.log(nth(arrayToList([10, 20, 30]), 1));
