@@ -84,24 +84,26 @@ const prepend = (element, list) => {
     rest: list,
   };
   return newList;
-}
+};
 console.log("(prepend(10, prepend(20, null)))");
 console.log(prepend(10, prepend(20, null)));
 
 const nth = (list, number) => {
   let position = 0;
   for (let node = list; node; node = node.rest) {
-    if (position === number) { return node.value }
+    if (position === number) {
+      return node.value;
+    }
     position++;
   }
-}
+};
 
 console.log("nth(arrayToList([10, 20, 30]), 1)");
 console.log(nth(arrayToList([10, 20, 30]), 1));
 
-const nthRecursive = (list,number) => {
+const nthRecursive = (list, number) => {
   let position = 0;
-  const recursive = (list,number) => {
+  const recursive = (list, number) => {
     if (list === null) {
       return undefined;
     }
@@ -109,9 +111,39 @@ const nthRecursive = (list,number) => {
       return list.value;
     }
     position++;
-    return recursive(list.rest,number);
-  }
-  return recursive(list,number);
-}
+    return recursive(list.rest, number);
+  };
+  return recursive(list, number);
+};
 console.log("nthRecursive(arrayToList([10, 20, 30]), 2)");
 console.log(nthRecursive(arrayToList([10, 20, 30]), 2));
+
+console.log("\n Deep Equal comparison \n");
+const deepEqual = (objA, objB) => {
+  if (
+    typeof objA == "object" &&
+    typeof objB == "object" &&
+    objA != null &&
+    objB != null
+  ) {
+    if (Object.keys(objA).length == Object.keys(objB).length) {
+      for (let key of Object.keys(objA)) {
+        if (Object.keys(objB).includes(key)) {
+          if (JSON.stringify(objA[key]) !== JSON.stringify(objB[key])) {
+            return false
+          }
+        }
+      }
+    }
+  }
+  return true;
+};
+
+console.log("let obj = { here: { is: \"an\" }, object: 2 };");
+let obj = { here: { is: "an" }, object: 2 };
+console.log("deepEqual(obj, obj)");
+console.log(deepEqual(obj, obj));
+console.log("deepEqual(obj, { here: 1, object: 2 })");
+console.log(deepEqual(obj, { here: 1, object: 2 }));
+console.log("deepEqual(obj, { here: { is: \"an\" }, object: 2 })");
+console.log(deepEqual(obj, { here: { is: "an" }, object: 2 }));
