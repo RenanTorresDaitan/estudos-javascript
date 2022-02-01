@@ -89,12 +89,29 @@ console.log("(prepend(10, prepend(20, null)))");
 console.log(prepend(10, prepend(20, null)));
 
 const nth = (list, number) => {
-  let position = -1;
+  let position = 0;
   for (let node = list; node; node = node.rest) {
-    position++;
     if (position === number) { return node.value }
+    position++;
   }
 }
 
 console.log("nth(arrayToList([10, 20, 30]), 1)");
 console.log(nth(arrayToList([10, 20, 30]), 1));
+
+const nthRecursive = (list,number) => {
+  let position = 0;
+  const recursive = (list,number) => {
+    if (list === null) {
+      return undefined;
+    }
+    if (position === number) {
+      return list.value;
+    }
+    position++;
+    return recursive(list.rest,number);
+  }
+  return recursive(list,number);
+}
+console.log("nthRecursive(arrayToList([10, 20, 30]), 2)");
+console.log(nthRecursive(arrayToList([10, 20, 30]), 2));
