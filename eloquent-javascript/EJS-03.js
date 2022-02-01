@@ -76,3 +76,14 @@ function listToArray(list) {
 
 console.log("listToArray(arrayToList([10, 20, 30]))");
 console.log(listToArray(arrayToList([10, 20, 30])));
+
+const prepend = (element, list) => {
+  let newList = {};
+  newList = {
+    value: element,
+    rest: list,
+  };
+  return newList;
+}
+console.log("(prepend(10, prepend(20, null)))");
+console.log(prepend(10, prepend(20, null)));
