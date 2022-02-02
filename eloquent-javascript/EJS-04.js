@@ -3,7 +3,9 @@ console.log("\tArray Flattening\n");
 
 console.log("let arrays = [[1, 2, 3], [4, 5], [6]]");
 let arrays = [[1, 2, 3], [4, 5], [6]];
-const flattenedArray = arrays.reduce((result, element) => (result.concat(element)));
+const flattenedArray = arrays.reduce((result, element) =>
+  result.concat(element)
+);
 console.log(`Flattened: ${flattenedArray}`);
 
 console.log("\n\tYour Own Loop\n");
