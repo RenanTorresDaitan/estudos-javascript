@@ -14,24 +14,18 @@ console.log(
 );
 
 function isEven(number) {
-  let even = false;
   let positiveNumber = Math.abs(number);
-  function findEvenness(num) {
-    if (num === 0) {
-      even = true;
-    } else if (num === 1) {
-      even = false;
-    } else {
-      return findEvenness(num - 2);
-    }
+  if (positiveNumber === 0) {
+    return true;
+  } else if (positiveNumber === 1) {
+    return false;
   }
-  findEvenness(positiveNumber);
-  return `The number ${number} is ${even ? "Even":"Odd"}`
+  return isEven(positiveNumber - 2);
 }
 
-console.log(isEven(75));
-console.log(isEven(50));
-console.log(isEven(-1));
+console.log(`The number 75 is ${isEven(75) ? "Even" : "Odd"}`);
+console.log(`The number 50 is ${isEven(50) ? "Even" : "Odd"}`);
+console.log(`The number -1 is ${isEven(-1) ? "Even" : "Odd"}`);
 
 console.log(
   "\nWrite a function that counts the number of uppercase Bs in a string \n"
