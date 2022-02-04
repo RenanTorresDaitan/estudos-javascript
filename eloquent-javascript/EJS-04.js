@@ -4,10 +4,10 @@ console.log("Chapter 05 - Exercises\n");
 console.log("\tArray Flattening\n");
 
 console.log("let arrays = [[1, 2, 3], [4, 5], [6]]");
-let arrays = [[1, 2, 3], [4, 5], [6]];
-const flattenedArray = arrays.reduce((result, element) =>
-  result.concat(element)
-);
+const arrays = [[1, 2, 3], [4, [5]], [6]];
+const flattenedArray = arrays.reduce((result, element) => {
+  return result.concat(element);
+});
 console.log(`Flattened: ${flattenedArray}`);
 
 console.log("\n\tYour Own Loop\n");
@@ -31,17 +31,21 @@ loop(
 console.log("\n\tEverything\n");
 
 const every = (array, test) => {
-  for (let i = 0; i < array.length; i++) {
-    if (!test(array[i])) return false;
+  for (let item of array) {
+    if (!test(item)) return false;
   }
   return true;
 };
 
-console.log(every([1, 3, 5], (n) => n < 10));
+const every2 = (array, test) => {
+  return !array.some((item) => !test(item));
+};
+
+console.log(every2([1, 3, 5], (n) => n < 10));
 // → true
-console.log(every([2, 4, 16], (n) => n < 10));
+console.log(every2([2, 4, 16], (n) => n < 10));
 // → false
-console.log(every([], (n) => n < 10));
+console.log(every2([], (n) => n < 10));
 // → true
 
 console.log("\n\tDominant Writing Direction\n");
@@ -87,18 +91,19 @@ function textScripts(text) {
     .join(", ");
 }
 function dominantDirection(text) {
-    let scripts = countBy(text, (char) => {
-        let script = characterScript(char.codePointAt(0));
-        return script ? script.direction : "none";
-      }).filter(({ name }) => name != "none");
-    
-      let total = scripts.reduce((n, { count }) => n + count, 0);
-      if (total == 0) return "No scripts found";
-      return scripts
-    .map(({ name, count }) => {
-      return `${Math.round((count * 100) / total)}% ${name}`;
-    })
-    .join(", ");
+  let scripts = countBy(text, (char) => {
+    let script = characterScript(char.codePointAt(0));
+    return script ? script.direction : "none";
+  }).filter(({ name }) => name != "none");
+
+  let total = scripts.reduce((n, { count }) => n + count, 0);
+  if (total == 0) return "No scripts found";
+
+  return scripts.filter(({ name, count }) => {
+    if (((count * 100) / total) > 50) {
+      return name;
+    }
+     }).map(item => item.name);
 }
 
 console.log(dominantDirection("Hello!"));
