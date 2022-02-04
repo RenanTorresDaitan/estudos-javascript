@@ -34,4 +34,58 @@ console.log(new Vec(1, 2).minus(new Vec(2, 3)));
 console.log(new Vec(3, 4).length);
 // → 5
 
+console.log("\nGroups\n");
 
+/*Write a class called Group (since Set is already taken). 
+Like Set, it has add, delete, and has methods. 
+Its constructor creates an empty group, add adds a value to the group 
+(but only if it isn’t already a member), delete removes its argument 
+from the group (if it was a member), and has returns a Boolean value 
+indicating whether its argument is a member of the group.
+
+Use the === operator, or something equivalent such as indexOf, 
+to determine whether two values are the same.
+
+Give the class a static from method that takes an iterable 
+object as argument and creates a group that contains all the 
+values produced by iterating over it.
+*/
+
+class Group {
+  constructor() {
+    this.values = [];
+  }
+  add(valueToAdd) {
+    if (!this.has(valueToAdd)) {
+      this.values.push(valueToAdd);
+    }
+  }
+  delete(valueToDelete) {
+    if (this.has(valueToDelete)) {
+      this.values = this.values.splice(
+        this.values.indexOf(valueToDelete - 1),
+        1
+      );
+    }
+  }
+  has(value) {
+    return this.values.includes(value);
+  }
+  static from(obj) {
+    const newGroup = new Group();
+    for (const item of obj) {
+      newGroup.add(item);
+    }
+    return newGroup;
+  }
+}
+
+let group = Group.from([10, 20]);
+console.log(group.has(10));
+// → true
+console.log(group.has(30));
+// → false
+group.add(10);
+group.delete(10);
+console.log(group.has(10));
+// → false
