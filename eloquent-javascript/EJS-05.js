@@ -55,6 +55,12 @@ class Group {
   constructor() {
     this.values = [];
   }
+  length() {
+    return this.values.length;
+  }
+  get(index) {
+    return this.values[index];
+    }
   add(valueToAdd) {
     if (!this.has(valueToAdd)) {
       this.values.push(valueToAdd);
@@ -62,7 +68,7 @@ class Group {
   }
   delete(valueToDelete) {
     if (this.has(valueToDelete)) {
-      this.values = this.values.filter(v => v != valueToDelete);
+      this.values = this.values.filter((v) => v != valueToDelete);
     }
   }
   has(value) {
@@ -70,7 +76,7 @@ class Group {
   }
   static from(obj) {
     const newGroup = new Group();
-    obj.forEach(value => newGroup.add(value));
+    obj.forEach((value) => newGroup.add(value));
     return newGroup;
   }
 }
@@ -84,3 +90,42 @@ group.add(10);
 group.delete(10);
 console.log(group.has(10));
 // → false
+
+console.log("\nIterable Groups\n");
+/* Make the Group class from the previous exercise iterable. 
+Refer to the section about the iterator interface earlier 
+in the chapter if you aren’t clear on the exact form of the interface anymore.
+
+If you used an array to represent the group’s members, 
+don’t just return the iterator created by calling the 
+Symbol.iterator method on the array. That would work, 
+but it defeats the purpose of this exercise.
+
+It is okay if your iterator behaves strangely when the 
+group is modified during iteration.
+*/
+
+class GroupIterator {
+  constructor(group) {
+    this.iterator = 0;
+    this.group = group;
+  }
+  next() {
+    if (this.iterator == this.group.length()) return { done: true };
+    let value = {value: this.group.get(this.iterator)};
+    this.iterator++;
+    return { value, done: false };
+  }
+}
+
+Group.prototype[Symbol.iterator] = function() {
+  return new GroupIterator(this);
+};
+
+for (let value of Group.from(["a", "b", "c"])) {
+  console.log(value);
+}
+// → a
+// → b
+// → c
+
