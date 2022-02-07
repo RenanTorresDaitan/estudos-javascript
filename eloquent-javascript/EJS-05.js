@@ -62,10 +62,7 @@ class Group {
   }
   delete(valueToDelete) {
     if (this.has(valueToDelete)) {
-      this.values = this.values.splice(
-        this.values.indexOf(valueToDelete - 1),
-        1
-      );
+      this.values = this.values.filter(v => v != valueToDelete);
     }
   }
   has(value) {
@@ -73,9 +70,7 @@ class Group {
   }
   static from(obj) {
     const newGroup = new Group();
-    for (const item of obj) {
-      newGroup.add(item);
-    }
+    obj.forEach(value => newGroup.add(value));
     return newGroup;
   }
 }
