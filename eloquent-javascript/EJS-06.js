@@ -142,8 +142,8 @@ function goalOrientedRobot({ place, parcels }, route) {
   return { direction: route[0], memory: route.slice(1) };
 }
 
-console.log("\nExercises\n");
-console.log("\nMeasuring a Robot\n");
+console.log("Exercises\n");
+console.log("\tMeasuring a Robot\n");
 
 /*It’s hard to objectively compare robots by just letting them 
 solve a few scenarios. Maybe one robot just happened to get 
@@ -159,26 +159,27 @@ the average number of steps each robot took per task.
 For the sake of fairness, make sure you give each task to both
  robots, rather than generating different tasks per robot.*/
 
- function runLoggedRobot(state, robot, memory) {
-    for (let turn = 0; ; turn++) {
-      if (state.parcels.length == 0) {
-        return turn;
-      }
-      let action = robot(state, memory);
-      state = state.move(action.direction);
-      memory = action.memory;
+function runLoggedRobot(state, robot, memory) {
+  for (let turn = 0; ; turn++) {
+    if (state.parcels.length == 0) {
+      return turn;
     }
+    let action = robot(state, memory);
+    state = state.move(action.direction);
+    memory = action.memory;
   }
+}
 
 function compareRobots(robot1, memory1, robot2, memory2) {
-    const results = [];
-  for (let i = 0; i < 10; i++) {
+  let firstRobotSteps = 0;
+  let secondRobotSteps = 0;
+  const measurements = 10;
+  for (let i = 0; i < measurements; i++) {
     const task = new VillageState.random();
-    const firstRobot = runLoggedRobot(task, robot1, memory1);
-    const secondRobot = runLoggedRobot(task, robot2, memory2);
-    results.push({task: i, robotA: firstRobot, robotB: secondRobot});
-     }
-     return results.forEach(item => console.log(item));
+    firstRobotSteps += runLoggedRobot(task, robot1, memory1);
+    secondRobotSteps += runLoggedRobot(task, robot2, memory2);
+  }
+  return console.log(`Robot steps average: \nFirst: ${firstRobotSteps/measurements} steps\nSecond: ${secondRobotSteps/measurements} steps`);
 }
 
 compareRobots(routeRobot, [], goalOrientedRobot, []);
