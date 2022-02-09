@@ -173,13 +173,43 @@ function runLoggedRobot(state, robot, memory) {
 function compareRobots(robot1, memory1, robot2, memory2) {
   let firstRobotSteps = 0;
   let secondRobotSteps = 0;
-  const measurements = 10;
+  const measurements = 100;
   for (let i = 0; i < measurements; i++) {
     const task = new VillageState.random();
     firstRobotSteps += runLoggedRobot(task, robot1, memory1);
     secondRobotSteps += runLoggedRobot(task, robot2, memory2);
   }
-  return console.log(`Robot steps average: \nFirst: ${firstRobotSteps/measurements} steps\nSecond: ${secondRobotSteps/measurements} steps`);
+  return console.log(
+    `Robot steps average: \nFirst: \t\t${
+      firstRobotSteps / measurements
+    } steps\nSecond: \t${secondRobotSteps / measurements} steps`
+  );
 }
 
 compareRobots(routeRobot, [], goalOrientedRobot, []);
+
+console.log("\nRobot Efficiency");
+
+/*Can you write a robot that finishes the delivery task faster 
+than goalOrientedRobot? If you observe that robot’s behavior, 
+what obviously stupid things does it do? How could those be improved?
+
+If you solved the previous exercise, you might want to use 
+your compareRobots function to verify whether you improved 
+the robot. */
+
+function myRobot({ place, parcels }, route) {
+    const routeLength = (x => findRoute(roadGraph, place, x.place).length);
+    const shortestRouteParcel = parcels.reduce((a,b) => routeLength(a) > routeLength(b) ? b:a);
+    if (route.length == 0) {
+        let parcel = shortestRouteParcel;
+        if (parcel.place != place) {
+            route = findRoute(roadGraph, place, parcel.place);
+        } else {
+            route = findRoute(roadGraph, place, parcel.address);
+        }
+    }
+    return { direction: route[0], memory: route.slice(1) };
+}
+
+compareRobots(goalOrientedRobot, [], myRobot, []);
