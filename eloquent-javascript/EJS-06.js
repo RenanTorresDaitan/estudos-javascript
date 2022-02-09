@@ -199,17 +199,86 @@ your compareRobots function to verify whether you improved
 the robot. */
 
 function myRobot({ place, parcels }, route) {
-    const routeLength = (x => findRoute(roadGraph, place, x.place).length);
-    const shortestRouteParcel = parcels.reduce((a,b) => routeLength(a) > routeLength(b) ? b:a);
-    if (route.length == 0) {
-        let parcel = shortestRouteParcel;
-        if (parcel.place != place) {
-            route = findRoute(roadGraph, place, parcel.place);
-        } else {
-            route = findRoute(roadGraph, place, parcel.address);
-        }
+  const routeLength = (x) => findRoute(roadGraph, place, x.place).length;
+  const shortestRouteParcel = parcels.reduce((a, b) =>
+    routeLength(a) > routeLength(b) ? b : a
+  );
+  if (route.length == 0) {
+    let parcel = shortestRouteParcel;
+    if (parcel.place != place) {
+      route = findRoute(roadGraph, place, parcel.place);
+    } else {
+      route = findRoute(roadGraph, place, parcel.address);
     }
-    return { direction: route[0], memory: route.slice(1) };
+  }
+  return { direction: route[0], memory: route.slice(1) };
 }
 
 compareRobots(goalOrientedRobot, [], myRobot, []);
+
+console.log("\nPersistent Group");
+/*Most data structures provided in a standard JavaScript environment 
+aren’t very well suited for persistent use. 
+Arrays have slice and concat methods, which allow us to easily create 
+new arrays without damaging the old one. But Set, for example, has no 
+methods for creating a new set with an item added or removed.
+
+Write a new class PGroup, similar to the Group class from Chapter 6, 
+which stores a set of values. Like Group, it has add, delete, and has methods.
+
+Its add method, however, should return a new PGroup instance with 
+the given member added and leave the old one unchanged. 
+Similarly, delete creates a new instance without a given member.
+
+The class should work for values of any type, not just strings. 
+It does not have to be efficient when used with large amounts of values.
+
+The constructor shouldn’t be part of the class’s interface 
+(though you’ll definitely want to use it internally). 
+Instead, there is an empty instance, PGroup.empty, 
+that can be used as a starting value.
+
+Why do you need only one PGroup.empty value, rather than having a 
+function that creates a new, empty map every time?*/
+
+class PGroup {
+  constructor() {
+    this.values = [];
+  }
+  add(valueToAdd) {
+    if (!this.has(valueToAdd)) {
+      const newGroup = new PGroup();
+      newGroup.values.push(...this.values, valueToAdd);
+      return newGroup;
+    }
+  }
+  delete(valueToDelete) {
+    if (this.has(valueToDelete)) {
+      const newGroup = new PGroup();
+      newGroup.values = this.values.filter(item => item != valueToDelete);
+      return newGroup;
+    }
+  }
+  has(value) {
+    return this.values.includes(value);
+  }
+  static from(obj) {
+    const newGroup = new PGroup();
+    for (const item of obj) {
+      newGroup.add(item);
+    }
+    return newGroup;
+  }
+}
+PGroup.empty = new PGroup();
+
+let a = PGroup.empty.add("a");
+let ab = a.add("b");
+let b = ab.delete("a");
+
+console.log(b.has("b"));
+// → true
+console.log(a.has("b"));
+// → false
+console.log(b.has("a"));
+// → false
