@@ -131,8 +131,8 @@ const deepEqual = (objA, objB) => {
   }
   return true;
 };
-console.log('let obj = { here: { is: "an" }, object: 2 };');
-let obj = { here: { is: "an" }, object: 2 };
+console.log('const obj = { here: { is: "an" }, object: 2 };');
+const obj = { here: { is: "an" }, object: 2 };
 console.log("deepEqual(obj, obj)");
 console.log(deepEqual(obj, obj));
 console.log("deepEqual(obj, { here: 1, object: 2 })");
