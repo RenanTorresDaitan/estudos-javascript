@@ -23,12 +23,6 @@ function parseExpression(program) {
   return parseApply(expr, program.slice(match[0].length));
 }
 
-function skipSpace(string) {
-  let first = string.search(/\S/);
-  if (first == -1) return "";
-  return string.slice(first);
-}
-
 function parseApply(expr, program) {
   program = skipSpace(program);
   if (program[0] != "(") {
@@ -175,20 +169,69 @@ element(array, n) to fetch the nth element from an array.*/
 
 // Modify these definitions...
 
-topScope.array = (...values) => {return [...values]};
+topScope.array = (...values) => [...values];
 
-topScope.length = arr => {return arr.length};
+topScope.length = arr => arr.length;
 
-topScope.element = (arr, element) => { return arr[element]};
+topScope.element = (arr, element) => arr[element];
 
 run(`
 do(define(sum, fun(array,
-     do(define(i, 0),
-        define(sum, 0),
-        while(<(i, length(array)),
-          do(define(sum, +(sum, element(array, i))),
-             define(i, +(i, 1)))),
-        sum))),
-   print(sum(array(1, 2, 3))))
-`);
+    do(define(i, 0),
+    define(sum, 0),
+    while(<(i, length(array)),
+    do(define(sum, +(sum, element(array, i))),
+    define(i, +(i, 1)))),
+    sum))),
+    print(sum(array(1, 2, 3))))
+    `);
 // → 6
+
+console.log("\tClosure\n")
+/*The way we have defined fun allows functions in Egg to reference the 
+surrounding scope, allowing the function’s body to use local values 
+that were visible at the time the function was defined, just like 
+JavaScript functions do.
+
+The following program illustrates this: function f returns a function 
+that adds its argument to f’s argument, meaning that it needs access 
+to the local scope inside f to be able to use binding a.*/
+
+run(`
+do(define(f, fun(a, fun(b, +(a, b)))),
+print(f(4)(5)))
+`);
+// → 9
+/*Go back to the definition of the fun form and explain which mechanism 
+causes this to work.*/
+
+console.log("\tComments\n")
+
+/*It would be nice if we could write comments in Egg. For example, whenever 
+we find a hash sign (#), we could treat the rest of the line as a comment 
+and ignore it, similar to // in JavaScript.
+
+We do not have to make any big changes to the parser to support this. 
+We can simply change skipSpace to skip comments as if they are whitespace 
+so that all the points where skipSpace is called will now also skip comments. 
+Make this change.*/
+
+// This is the old skipSpace. Modify it...
+function skipSpace(string) {
+  let first = string.search(/\S/);
+  if (first == -1) return "";
+  string = string.slice(first);
+  let comment = (/#\s.+\n/).exec(string);
+  if (comment !== null) {
+   string = string.replace(comment[0],"")
+  }
+  return string;
+}
+
+console.log(parse("# hello\nx"));
+// → {type: "word", name: "x"}
+
+console.log(parse("a # one\n   # two\n()"));
+// → {type: "apply",
+//    operator: {type: "word", name: "a"},
+//    args: []}
