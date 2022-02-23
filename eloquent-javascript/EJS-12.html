@@ -68,47 +68,33 @@
         { name: "Popocatepetl", height: 5465, place: "Mexico" },
         { name: "Mont Blanc", height: 4808, place: "Italy/France" },
       ];
-      //   <table>
-      //   <tr>
-      //     <th>name</th>
-      //     <th>height</th>
-      //     <th>place</th>
-      //   </tr>
-      //   <tr>
-      //     <td>Kilimanjaro</td>
-      //     <td>5895</td>
-      //     <td>Tanzania</td>
-      //   </tr>
-      // </table>
+      
       function createTableFromArray(array) {
         const table = document.createElement("table");
-      const trHeadings = document.createElement("tr");
-      Object.keys(array[0]).forEach((key) => {
-        let trH = document.createElement("th");
-        trH.textContent = key;
-        trHeadings.appendChild(trH);
-      });
-      table.appendChild(trHeadings);
-      array.forEach(item => {
-        const {name,height,place} = item;
-        const tableRow = document.createElement("tr");
-        let tdName = document.createElement("td");
-        let tdHeight = document.createElement("td");
-        let tdPlace = document.createElement("td");
-        tdName.textContent = name;
-        tdHeight.textContent = height;
-        tdPlace.textContent = place;
-        tableRow.appendChild(tdName);
-        tableRow.appendChild(tdHeight);
-        tableRow.appendChild(tdPlace);
-        table.appendChild(tableRow);
-      });
-      console.log(table);
-      return table;
-    }
-    const mountains_div = document.getElementById("mountains");
-    mountains_div.appendChild(createTableFromArray(MOUNTAINS));
-      // MOUNTAINS.forEach((mountain) => mountains_div.textContent += mountain.name);
+        const trHeadings = document.createElement("tr");
+        Object.keys(array[0]).forEach((key) => {
+          trHeadings.appendChild(createCell("th",key));
+        });
+        table.appendChild(trHeadings);
+        array.forEach((item) => {
+          const { name, height, place } = item;
+          const tableRow = document.createElement("tr");
+          tableRow.appendChild(createCell("td",name));
+          tableRow.appendChild(createCell("td",height, "right"));
+          tableRow.appendChild(createCell("td",place));
+          table.appendChild(tableRow);
+        });
+        console.log(table);
+        function createCell(type, text, align) {
+          const cell = document.createElement(type);
+          cell.textContent = text;
+          cell.style.textAlign = align;
+          return cell;
+        }
+        return table;
+      }
+      const mountains_div = document.getElementById("mountains");
+      mountains_div.appendChild(createTableFromArray(MOUNTAINS));
     </script>
   </body>
 </html>
