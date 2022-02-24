@@ -68,23 +68,23 @@
         { name: "Popocatepetl", height: 5465, place: "Mexico" },
         { name: "Mont Blanc", height: 4808, place: "Italy/France" },
       ];
-      
+
       function createTableFromArray(array) {
         const table = document.createElement("table");
         const trHeadings = document.createElement("tr");
         Object.keys(array[0]).forEach((key) => {
-          trHeadings.appendChild(createCell("th",key));
+          trHeadings.appendChild(createCell("th", key));
         });
         table.appendChild(trHeadings);
         array.forEach((item) => {
           const { name, height, place } = item;
           const tableRow = document.createElement("tr");
-          tableRow.appendChild(createCell("td",name));
-          tableRow.appendChild(createCell("td",height, "right"));
-          tableRow.appendChild(createCell("td",place));
+          tableRow.appendChild(createCell("td", name));
+          tableRow.appendChild(createCell("td", height, "right"));
+          tableRow.appendChild(createCell("td", place));
           table.appendChild(tableRow);
         });
-        console.log(table);
+
         function createCell(type, text, align) {
           const cell = document.createElement(type);
           cell.textContent = text;
@@ -95,6 +95,47 @@
       }
       const mountains_div = document.getElementById("mountains");
       mountains_div.appendChild(createTableFromArray(MOUNTAINS));
+    </script>
+
+    <h2>Elements by tag name</h2>
+    <p>
+      The document.getElementsByTagName method returns all child elements with a
+      given tag name. Implement your own version of this as a function that
+      takes a node and a string (the tag name) as arguments and returns an array
+      containing all descendant element nodes with the given tag name.
+    </p>
+
+    <p>
+      To find the tag name of an element, use its nodeName property. But note
+      that this will return the tag name in all uppercase. Use the toLowerCase
+      or toUpperCase string methods to compensate for this.
+    </p>
+    <div id="elements-by-tag-name">
+      <h1>Heading with a <span>span</span> element.</h1>
+      <p>A paragraph with <span>one</span>, <span>two</span> spans.</p>
+    </div>
+
+    <script>
+      function byTagName(node, tagName, array =[]) {
+        if (node.nodeType == Node.ELEMENT_NODE) {
+          for (let child of node.childNodes) {
+            if (byTagName(child, tagName, array)) {
+              if (child.nodeName.toLowerCase() == tagName) {
+                array.push(child.nodeName.toLowerCase());
+              }
+            }
+          }
+        }
+        return array;
+      }
+
+      console.log(byTagName(document.getElementById("elements-by-tag-name"), "h1").length);
+      // → 1
+      console.log(byTagName(document.getElementById("elements-by-tag-name"), "span").length);
+      // → 3
+      let para = document.getElementById("elements-by-tag-name").querySelector("p");
+      console.log(byTagName(para, "span").length);
+      // → 2
     </script>
   </body>
 </html>
