@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercises from Chapter 15</title>
+  </head>
+  <body>
+    <h1>Balloon</h1>
+    <p>
+      Write a page that displays a balloon (using the balloon emoji, 🎈). When
+      you press the up arrow, it should inflate (grow) 10 percent, and when you
+      press the down arrow, it should deflate (shrink) 10 percent.
+    </p>
+    <p>
+      You can control the size of text (emoji are text) by setting the font-size
+      CSS property (style.fontSize) on its parent element. Remember to include a
+      unit in the value—for example, pixels (10px).
+    </p>
+    <p>
+      The key names of the arrow keys are "ArrowUp" and "ArrowDown". Make sure
+      the keys change only the balloon, without scrolling the page.
+    </p>
+    <p>
+      When that works, add a feature where, if you blow up the balloon past a
+      certain size, it explodes. In this case, exploding means that it is
+      replaced with an 💥 emoji, and the event handler is removed (so that you
+      can’t inflate or deflate the explosion).
+    </p>
+
+    <p id="balloon">🎈</p>
+    <script>
+      const balloon = document.getElementById("balloon");
+      let size = 10;
+      window.addEventListener("keydown", (event) => {
+        if (size >= 50) {
+            balloon.textContent = "💥";
+          window.removeEventListener("keydown");
+        }
+        if (event.key == "ArrowUp") {
+          size *= 1.1;
+        }
+        if (event.key == "ArrowDown") {
+          size *= 0.9;
+        }
+        balloon.style.fontSize = size + "px";
+        event.preventDefault();
+      });
+    </script>
+  </body>
+</html>
