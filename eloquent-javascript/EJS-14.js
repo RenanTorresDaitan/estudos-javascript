@@ -339,21 +339,6 @@ Player.prototype.update = function (time, state, keys) {
   return new Player(pos, new Vec(xSpeed, ySpeed));
 };
 
-function trackKeys(keys) {
-  let down = Object.create(null);
-  function track(event) {
-    if (keys.includes(event.key)) {
-      down[event.key] = event.type == "keydown";
-      event.preventDefault();
-    }
-  }
-  window.addEventListener("keydown", track);
-  window.addEventListener("keyup", track);
-  return down;
-}
-
-const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
-
 function runAnimation(frameFunc) {
   let lastTime = null;
   function frame(time) {
@@ -416,22 +401,19 @@ the current number of lives (using console.log) every time a level starts.*/
 // The old runGame function. Modify it...
 async function runGame(plans, Display) {
   let lives = 3;
-  console.log(`Lives left: ${lives}`);
-  for (let level = 0; level < plans.length; ) {
+  for (let level = 0; level < plans.length && lives > 0; ) {
     let status = await runLevel(new Level(plans[level]), Display);
+    console.log(`Lives left: ${lives}`);
     if (status == "won") level++;
-    if (status == "lost") {
-      if (lives > 0) {
-        lives--;
-        console.log(`Lives left: ${lives}`);
-      } else {
-        console.log("Game over!");
-      }
-    }
+    if (status == "lost") lives--;
   }
-  console.log("You've won!");
+  if (lives > 0) {
+    console.log("You've won!");
+  } else {
+    console.log("Game over!");
+  }
 }
-runGame(GAME_LEVELS, DOMDisplay);
+// runGame(GAME_LEVELS, DOMDisplay);
 
 let pauseTheGameSubheading = document.createElement("h2");
 pauseTheGameSubheading.textContent = "Pausing the Game";
@@ -459,15 +441,18 @@ function runLevel(level, Display) {
   let state = State.start(level);
   let ending = 1;
   let paused = false;
-  document.addEventListener("keydown", (event) => {
+  function escapeKey(event) {
     if (event.key === "Escape") paused = !paused;
-  });
+  }
+
+  window.addEventListener("keydown", escapeKey);
+  let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
   return new Promise((resolve) => {
     runAnimation((time) => {
       if (!paused) {
         state = state.update(time, arrowKeys);
+        display.syncState(state);
       }
-      display.syncState(state);
       if (state.status == "playing") {
         return true;
       } else if (ending > 0) {
@@ -475,10 +460,29 @@ function runLevel(level, Display) {
         return true;
       } else {
         display.clear();
+        arrowKeys.unregister();
         resolve(state.status);
         return false;
       }
     });
   });
 }
+
+function trackKeys(keys) {
+  let down = Object.create(null);
+  function track(event) {
+    if (keys.includes(event.key)) {
+      down[event.key] = event.type == "keydown";
+      event.preventDefault();
+    }
+  }
+  window.addEventListener("keydown", track);
+  window.addEventListener("keyup", track);
+  down.unregister = () => {
+    window.removeEventListener("keydown", track);
+    window.removeEventListener("keyup", track);
+  };
+  return down;
+}
+
 runGame(GAME_LEVELS, DOMDisplay);
