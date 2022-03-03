@@ -33,3 +33,6 @@
   max-height: 450px;
   position: relative;
 }
+.monster {
+  background: purple;
+}

@@ -10,7 +10,7 @@ let simpleLevelPlan = `
 ......#++++++++++++#..
 ......##############..
 ......................`;
-let simpleLevelPlan2 = `
+let levelMadeByMe = `
 ......................
 .##...............o.#.
 .##..............####.
@@ -20,8 +20,22 @@ let simpleLevelPlan2 = `
 .#++++#++++++++++++##.
 .####################.
 ......................`;
+let levelWithMonster = `
+..................................
+.################################.
+.#..............................#.
+.#..............................#.
+.#..............................#.
+.#...........................o..#.
+.#..@...........................#.
+.##########..............########.
+..........#..o..o..o..o..#........
+..........#...........M..#........
+..........################........
+..................................
+`;
 
-const GAME_LEVELS = [simpleLevelPlan, simpleLevelPlan2];
+const GAME_LEVELS = [simpleLevelPlan, levelMadeByMe,levelWithMonster];
 
 class Level {
   constructor(plan) {
@@ -389,8 +403,6 @@ gameOverSubHeading.textContent = "Game Over";
 document.body.appendChild(exercisesHeading);
 document.body.appendChild(gameOverSubHeading);
 
-console.log("\tGame over\n");
-
 /*It’s traditional for platform games to have the player start with a limited 
 number of lives and subtract one life each time they die. When the player is 
 out of lives, the game restarts from the beginning.
@@ -403,9 +415,9 @@ async function runGame(plans, Display) {
   let lives = 3;
   for (let level = 0; level < plans.length && lives > 0; ) {
     let status = await runLevel(new Level(plans[level]), Display);
-    console.log(`Lives left: ${lives}`);
     if (status == "won") level++;
     if (status == "lost") lives--;
+    console.log(`Lives left: ${lives + 1}`);
   }
   if (lives > 0) {
     console.log("You've won!");
@@ -484,5 +496,66 @@ function trackKeys(keys) {
   };
   return down;
 }
+
+// runGame(GAME_LEVELS, DOMDisplay);
+
+const monsterSubheading = document.createElement("h2");
+monsterSubheading.textContent = "A Monster";
+document.body.appendChild(monsterSubheading);
+
+/*It is traditional for platform games to have enemies that you can jump 
+on top of to defeat. This exercise asks you to add such an actor type to 
+the game.
+
+We’ll call it a monster. Monsters move only horizontally. You can make 
+them move in the direction of the player, bounce back and forth like 
+horizontal lava, or have any movement pattern you want. The class 
+doesn’t have to handle falling, but it should make sure the monster 
+doesn’t walk through walls.
+
+When a monster touches the player, the effect depends on whether the 
+player is jumping on top of them or not. You can approximate this by 
+checking whether the player’s bottom is near the monster’s top. 
+If this is the case, the monster disappears. If not, the game is lost.*/
+
+// Complete the constructor, update, and collide methods
+class Monster {
+  constructor(pos, speed) {
+    this.pos = pos;
+    this.speed = speed;
+  }
+
+  get type() {
+    return "monster";
+  }
+
+  static create(pos, speed) {
+    return new Monster(pos.plus(new Vec(0, -1)), new Vec(1.5,0));
+  }
+
+  update(time, state) {
+    let newPos = this.pos.plus(this.speed.times(time));
+    if (!state.level.touches(newPos, this.size, "wall")) {
+        return new Monster(newPos, this.speed);
+    } else {
+        return new Monster(newPos, this.speed.times(-1));
+    }
+  }
+
+  collide(state) {
+      let player = state.actors.find((a) => a.type == "player");
+      const headTouchLimit = (player.pos.y + player.size.y - this.pos.y);
+      if (headTouchLimit > 0 && headTouchLimit < 0.2){
+          let filtered = state.actors.filter((a) => a != this);
+          return new State(state.level, filtered, state.status);
+      } else {
+          return new State(state.level, state.actors, "lost");
+      }
+  }
+}
+
+Monster.prototype.size = new Vec(1.2, 2);
+
+levelChars["M"] = Monster;
 
 runGame(GAME_LEVELS, DOMDisplay);
