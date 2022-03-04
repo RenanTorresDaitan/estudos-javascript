@@ -17,7 +17,7 @@ function trapezoid(xPos, yPos, size, largerSide = size / 3) {
   cx.stroke();
 }
 
-trapezoid(50, height / 2, 25, -45);
+trapezoid(width / 10, height / 2, 25, -45);
 
 function diamond(xPos, yPos, size, color) {
   cx.translate(xPos, yPos);
@@ -27,4 +27,19 @@ function diamond(xPos, yPos, size, color) {
   cx.resetTransform();
 }
 
-diamond(150, height / 2, 50, "red");
+diamond((width / 10) * 3, height / 2, 50, "red");
+
+function zigzagline(xPos, yPos, width, height, turns) {
+  cx.translate(xPos, yPos);
+  cx.beginPath();
+  cx.moveTo(-width, -height);
+  for (let i = 1; i < turns * 2; i++) {
+    let turnDistance = height / turns;
+    cx.lineTo(width, -height + turnDistance * i);
+    i++;
+    cx.lineTo(-width, -height + turnDistance * i);
+  }
+  cx.stroke();
+}
+
+zigzagline((width / 10) * 5, height / 2, 30, 30, 6);
