@@ -50,10 +50,31 @@ function spiral(xPos, yPos, radius, turns) {
   cx.translate(xPos, yPos);
   cx.beginPath();
   for (let i = 0; i < 360; i++) {
-    let angle = (i * Math.PI*(turns/radius/12));
-    let dist = (radius * i / 100);
+    let angle = i * Math.PI * (turns / radius / 12);
+    let dist = (radius * i) / 100;
     cx.lineTo(Math.cos(angle) * dist, Math.sin(angle) * dist);
   }
   cx.stroke();
+  cx.resetTransform();
 }
 spiral((width / 10) * 7, height / 2, 15, 3);
+
+function star(xPos, yPos, width, height, points, color) {
+  cx.fillStyle = color;
+  cx.translate(xPos, yPos);
+  cx.rotate(-Math.PI/2);
+  cx.beginPath();
+  for (let i = 0; i <= points; i++) {
+    const angle = ((2 * Math.PI) / points) * i;
+    cx.quadraticCurveTo(
+      0,
+      0,
+      width * Math.cos(angle),
+      height * Math.sin(angle)
+    );
+  }
+  cx.fill();
+  cx.resetTransform();
+}
+
+star((width / 10) * 9, height / 2, 50, 50, 8, "orange");
