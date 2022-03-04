@@ -15,6 +15,7 @@ function trapezoid(xPos, yPos, size, largerSide = size / 3) {
   cx.lineTo(xPos - bottom, yPos + size);
   cx.closePath();
   cx.stroke();
+  cx.resetTransform();
 }
 
 trapezoid(width / 10, height / 2, 25, -45);
@@ -40,6 +41,19 @@ function zigzagline(xPos, yPos, width, height, turns) {
     cx.lineTo(-width, -height + turnDistance * i);
   }
   cx.stroke();
+  cx.resetTransform();
 }
 
-zigzagline((width / 10) * 5, height / 2, 30, 30, 6);
+zigzagline((width / 10) * 5, height / 2, 40, 40, 6);
+
+function spiral(xPos, yPos, radius, turns) {
+  cx.translate(xPos, yPos);
+  cx.beginPath();
+  for (let i = 0; i < 360; i++) {
+    let angle = (i * Math.PI*(turns/radius/12));
+    let dist = (radius * i / 100);
+    cx.lineTo(Math.cos(angle) * dist, Math.sin(angle) * dist);
+  }
+  cx.stroke();
+}
+spiral((width / 10) * 7, height / 2, 15, 3);
