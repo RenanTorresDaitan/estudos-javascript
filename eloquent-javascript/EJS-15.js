@@ -118,4 +118,81 @@ for (let result of results) {
   cvPC.textAlign = Math.cos(middleOfSlice) < 0 ? "end" : "";
   cvPC.textBaseline = Math.sin(middleOfSlice) < 0 ? "bottom" : "top";
   cvPC.fillText(result.name, textX, textY);
+
+  // A Bouncing Ball exercise
+
+  let cvBB = document.querySelector("#canvasBouncingBall").getContext("2d");
+
+  class Vec {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    plus(otherVec) {
+      return new Vec(this.x + otherVec.x, this.y + otherVec.y);
+    }
+    minus(otherVec) {
+      return new Vec(this.x + otherVec.x, this.y + otherVec.y);
+    }
+    times(factor) {
+      return new Vec(this.x * factor, this.y * factor);
+    }
+    get length() {
+      return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    }
+  }
+
+  class Ball {
+    constructor(pos, speed, radius) {
+      this.pos = pos;
+      this.speed = speed;
+      this.radius = radius;
+    }
+    update(step) {
+      this.pos = this.collision(step);
+    }
+    collision(step) {
+      let newPos = this.pos.plus(this.speed.times(step * 100));
+      if (
+        newPos.x - this.radius < 0 ||
+        newPos.x + this.radius >= cvBB.canvas.width
+      ) {
+        this.speed.x *= -1;
+      }
+      if (
+        newPos.y - this.radius < 0 ||
+        newPos.y + this.radius >= cvBB.canvas.height
+      ) {
+        this.speed.y *= -1;
+      }
+      return newPos;
+    }
+  }
+  let lastTime = null;
+  function frame(time) {
+    if (lastTime != null) {
+      updateAnimation(Math.min(100, time - lastTime) / 1000);
+    }
+    lastTime = time;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  function updateAnimation(step) {
+    redBall.update(step);
+    cvBB.fillStyle = "red";
+    cvBB.beginPath();
+    cvBB.arc(redBall.pos.x, redBall.pos.y, redBall.radius, 0, Math.PI * 2);
+    cvBB.closePath();
+    cvBB.clearRect(0, 0, cvBB.canvas.width, cvBB.canvas.height);
+    cvBB.fill();
+  }
+  let redBall = new Ball(
+    new Vec(
+      Math.random() * cvBB.canvas.width,
+      Math.random() * cvBB.canvas.height
+    ),
+    new Vec((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10),
+    10
+  );
 }
