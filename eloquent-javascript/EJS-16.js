@@ -1,7 +1,18 @@
 const fetchDiv = document.querySelector("#fetchResult");
 
-fetchDiv.textContent = "teste";
+fetchDiv.textContent = "Fetching result...";
 
-fetch("https://eloquentjavascript.net/author").then((resp) =>
-  resp.headers.forEach((v) => console.log(v))
-);
+const acceptHeaders = [
+  "text/plain",
+  "text/html",
+  "application/json",
+  "application/rainbows+unicorns",
+];
+
+acceptHeaders.map((header) => {
+    fetch("https://eloquentjavascript.net/author", {
+  headers: { accept: header },
+})
+  .then((resp) => {return `<div>Header: ${header} Code: ${resp.status} Text: ${resp.statusText}</div>`})
+  .then((text) => fetchDiv.innerHTML += text);
+});
