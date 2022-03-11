@@ -124,11 +124,26 @@ var PixelEditor = class PixelEditor {
     this.controls = controls.map((Control) => new Control(state, config));
     this.dom = elt(
       "div",
-      {},
+      { tabIndex: 0, onkeydown: (event) => this.keyDown(event, config) },
       this.canvas.dom,
       elt("br"),
-      ...this.controls.reduce((a, c) => a.concat(" ", c.dom), [])
+      ...this.controls.reduce((a, c) => a.concat(" | ", c.dom), [])
     );
+  }
+  keyDown(event, config) {
+    const { tools, controls, dispatch } = config;
+    if (event.key == "z" && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      dispatch({ undo: true });
+    } else if (!event.ctrlKey && !event.metaKey && !event.altKey) {
+      event.preventDefault();
+      for (let tool of Object.keys(tools)){
+          if (event.key == tool[0]) {
+              dispatch({tool});
+          }
+      }
+      return;
+    }
   }
   syncState(state) {
     this.state = state;
@@ -388,5 +403,3 @@ function startPixelEditor({
 }
 
 document.querySelector("#main").appendChild(startPixelEditor({}));
-
-
