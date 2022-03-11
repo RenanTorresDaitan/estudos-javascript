@@ -48,24 +48,30 @@ var PictureCanvas = class PictureCanvas {
   }
   syncState(picture) {
     if (this.picture == picture) return;
-    drawPicture(picture, this.dom, scale,this.picture);
+    drawPicture(picture, this.dom, scale, this.picture);
     this.picture = picture;
   }
 };
 
 function drawPicture(picture, canvas, scale, previousPicture) {
-    if (previousPicture == null ||
-        previousPicture.width != picture.width ||
-        previousPicture.height != picture.height) {
-      canvas.width = picture.width * scale;
-      canvas.height = picture.height * scale;
-      previousPicture = null;
-    }
+  if (
+    previousPicture == null ||
+    previousPicture.width != picture.width ||
+    previousPicture.height != picture.height
+  ) {
+    canvas.width = picture.width * scale;
+    canvas.height = picture.height * scale;
+    previousPicture = null;
+  }
 
   let cx = canvas.getContext("2d");
   for (let y = 0; y < picture.height; y++) {
     for (let x = 0; x < picture.width; x++) {
-      if (previousPicture != null && picture.pixel(x, y) === previousPicture.pixel(x, y)) continue;
+      if (
+        previousPicture != null &&
+        picture.pixel(x, y) === previousPicture.pixel(x, y)
+      )
+        continue;
       cx.fillStyle = picture.pixel(x, y);
       cx.fillRect(x * scale, y * scale, scale, scale);
     }
@@ -221,6 +227,36 @@ function rectangle(start, state, dispatch) {
   }
   drawRectangle(start);
   return drawRectangle;
+}
+
+function circle(pos, state, dispatch) {
+  function drawCircle(to) {
+    let radius = Math.sqrt(
+      Math.pow(to.x - pos.x, 2) + Math.pow(to.y - pos.y, 2)
+    );
+    let radiusC = Math.ceil(radius);
+    let drawn = [];
+    for (let dy = -radiusC; dy <= radiusC; dy++) {
+      for (let dx = -radiusC; dx <= radiusC; dx++) {
+        let dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        if (dist > radius) continue;
+        let x = pos.x + dx,
+          y = pos.y + dy;
+        if (
+          y < 0 ||
+          y >= state.picture.height ||
+          x < 0 ||
+          x >= state.picture.width
+        )
+          continue;
+
+        drawn.push({ x, y, color: state.color });
+      }
+    }
+    dispatch({ picture: state.picture.draw(drawn) });
+  }
+  drawCircle(pos);
+  return drawCircle;
 }
 
 var around = [
@@ -382,7 +418,7 @@ var startState = {
   doneAt: 0,
 };
 
-var baseTools = { draw, fill, rectangle, pick };
+var baseTools = { draw, fill, rectangle, circle, pick };
 
 var baseControls = [
   ToolSelect,
