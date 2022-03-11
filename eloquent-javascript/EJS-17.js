@@ -48,18 +48,24 @@ var PictureCanvas = class PictureCanvas {
   }
   syncState(picture) {
     if (this.picture == picture) return;
+    drawPicture(picture, this.dom, scale,this.picture);
     this.picture = picture;
-    drawPicture(this.picture, this.dom, scale);
   }
 };
 
-function drawPicture(picture, canvas, scale) {
-  canvas.width = picture.width * scale;
-  canvas.height = picture.height * scale;
-  let cx = canvas.getContext("2d");
+function drawPicture(picture, canvas, scale, previousPicture) {
+    if (previousPicture == null ||
+        previousPicture.width != picture.width ||
+        previousPicture.height != picture.height) {
+      canvas.width = picture.width * scale;
+      canvas.height = picture.height * scale;
+      previousPicture = null;
+    }
 
+  let cx = canvas.getContext("2d");
   for (let y = 0; y < picture.height; y++) {
     for (let x = 0; x < picture.width; x++) {
+      if (previousPicture != null && picture.pixel(x, y) === previousPicture.pixel(x, y)) continue;
       cx.fillStyle = picture.pixel(x, y);
       cx.fillRect(x * scale, y * scale, scale, scale);
     }
@@ -137,10 +143,10 @@ var PixelEditor = class PixelEditor {
       dispatch({ undo: true });
     } else if (!event.ctrlKey && !event.metaKey && !event.altKey) {
       event.preventDefault();
-      for (let tool of Object.keys(tools)){
-          if (event.key == tool[0]) {
-              dispatch({tool});
-          }
+      for (let tool of Object.keys(tools)) {
+        if (event.key == tool[0]) {
+          dispatch({ tool });
+        }
       }
       return;
     }
