@@ -203,12 +203,45 @@ var ColorSelect = class ColorSelect {
 };
 
 function draw(pos, state, dispatch) {
-  function drawPixel({ x, y }, state) {
-    let drawn = { x, y, color: state.color };
-    dispatch({ picture: state.picture.draw([drawn]) });
+  function connectPoints(newPos, state) {
+    let line = drawLine(pos, newPos, state.color);
+    pos = newPos;
+    dispatch({ picture: state.picture.draw(line) });
   }
-  drawPixel(pos, state);
-  return drawPixel;
+  connectPoints(pos, state);
+  return connectPoints;
+}
+function drawLine(from, to, color) {
+  let points = [];
+  let deltaX = Math.abs(to.x - from.x);
+  let sx = from.x < to.x ? 1 : -1;
+  let deltaY = -Math.abs(to.y - from.y);
+  let sy = from.y < to.y ? 1 : -1;
+  let error = deltaX + deltaY;
+  let pointX = from.x,
+    pointY = from.y;
+  while (true) {
+    points.push({ x: pointX, y: pointY, color: color });
+    if (pointX === to.x && pointY === to.y) break;
+    let error2 = 2 * error;
+    if (error2 >= deltaY) {
+      if (pointX === to.x) break;
+      error = error + deltaY;
+      pointX += sx;
+    }
+    if (error2 <= deltaX) {
+      if (pointY === to.y) break;
+      error = error + deltaX;
+      pointY += sy;
+    }
+  }
+  return points;
+}
+function line(pos, state, dispatch) {
+  return (end) => {
+    let line = drawLine(pos, end, state.color);
+    dispatch({ picture: state.picture.draw(line) });
+  };
 }
 
 function rectangle(start, state, dispatch) {
@@ -418,7 +451,7 @@ var startState = {
   doneAt: 0,
 };
 
-var baseTools = { draw, fill, rectangle, circle, pick };
+var baseTools = { draw, fill, line, rectangle, circle, pick };
 
 var baseControls = [
   ToolSelect,
