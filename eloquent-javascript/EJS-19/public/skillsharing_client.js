@@ -29,11 +29,12 @@ function handleAction(state, action) {
   return state;
 }
 
-function fetchOK(url, options) {
-  return fetch(url, options).then(response => {
-    if (response.status < 400) return response;
-    else throw new Error(response.statusText);
-  });
+async function fetchOK(url, options) {
+  const response = await fetch(url, options);
+  if (response.status < 400)
+    return response;
+  else
+    throw new Error(response.statusText);
 }
 
 function talkURL(title) {
