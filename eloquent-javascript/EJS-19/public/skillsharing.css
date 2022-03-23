@@ -1,15 +1,13 @@
 body {
   margin: 0;
+  padding: 0;
 }
 :root {
-  --primary-color: rgb(26, 22, 223);
-  --secondary-color: rgb(152, 161, 235);
+  --primary-color: #2b6777;
+  --secondary-color: #c8d8e4;
   --left-right-margin: 0px 1rem;
   --top-bottom-margin: 1rem 0px;
-}
-
-.talk {
-  margin: var(--top-bottom-margin);
+  --left-margin: 1rem;
 }
 
 .comment {
@@ -39,7 +37,7 @@ h3 {
 
 label input {
   display: block;
-  width: calc(100vw - 2.5rem);
+  width: auto;
   margin: var(--left-right-margin);
 }
 
@@ -49,19 +47,45 @@ label input {
   text-align: center;
   background-size: auto;
 }
-
+.submit-button {
+  border-radius: 0%;
+  max-width: 8rem;
+  display: flex;
+  align-self: center;
+  transition-property: max-width max-height border-radius;
+  transition-duration: 500ms;
+}
+.comment-form {
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+}
+.comment-form > input {
+  display: flex;
+  max-width: auto;
+}
+#add-comment-btn-text {
+  display: inline;
+}
+@media (max-width: 425px) {
+  .submit-button {
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  #add-comment-btn-text {
+    display: none;
+  }
+}
 div > label {
   color: var(--primary-color);
-  margin: var(--left-right-margin);
-}
-div > label > input {
   margin: var(--left-right-margin);
 }
 
 .talks {
   margin: var(--left-right-margin);
   border: 2px solid var(--primary-color);
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   box-shadow: 2px 2px 5px var(--secondary-color);
   min-height: 1rem;
 }
@@ -70,10 +94,29 @@ div > label > input {
   color: var(--primary-color);
   text-transform: capitalize;
 }
-.talk > div {
+.comments {
   margin: var(--left-right-margin);
+  border: 1px solid var(--secondary-color);
+  border-radius: 0.33rem;
 }
-.talk > p {
-    display: flex;
-    justify-content: center;
+.summary {
+  display: flex;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: var(--secondary-color);
+  background-size: cover;
+  padding: 0.2rem;
+}
+.talk {
+  margin: 0.5rem;
+  border: 2px solid var(--secondary-color);
+  border-radius: 1rem;
+  padding: 10px;
+}
+
+form {
+  padding: 0.33rem var(--left-margin);
+}
+form > h3 {
+  margin: var(--left-right-margin);
 }
