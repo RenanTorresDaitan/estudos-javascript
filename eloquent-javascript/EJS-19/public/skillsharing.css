@@ -58,7 +58,7 @@ label input {
 .comment-form {
   display: flex;
   flex-direction: row;
-  column-gap: 1rem;
+  column-gap: 0.5rem;
 }
 .comment-form > input {
   display: flex;
@@ -67,7 +67,7 @@ label input {
 #add-comment-btn-text {
   display: inline;
 }
-@media (max-width: 425px) {
+@media (max-width: 420px) {
   .submit-button {
     border-radius: 50%;
     width: 1.5rem;
@@ -119,4 +119,10 @@ form {
 }
 form > h3 {
   margin: var(--left-right-margin);
+}
+
+input::placeholder{
+    color: var(--primary-color);
+    font-style: italic;
+    opacity: 80%;
 }

@@ -104,7 +104,11 @@ class Talk {
             form.reset();
           },
         },
-        elt("input", { type: "text", name: "comment" }),
+        elt("input", {
+          type: "text",
+          placeholder: "Type your comment...",
+          name: "comment",
+        }),
         " ",
         elt(
           "button",
