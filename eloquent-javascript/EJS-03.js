@@ -2,7 +2,7 @@ console.log("\n The sum of a Range \n");
 
 console.log("Range Function: \trange(5, 2)");
 function range(start, end, step = start < end ? 1 : -1) {
-  const arr = [];
+const arr = [];
   if (step > 0) {
     for (let i = start; i <= end; i += step) {
       arr.push(i);
