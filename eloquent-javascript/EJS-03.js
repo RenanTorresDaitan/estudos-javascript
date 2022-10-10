@@ -2,7 +2,7 @@ console.log("\n The sum of a Range \n");
 
 console.log("Range Function: \trange(5, 2)");
 function range(start, end, step = start < end ? 1 : -1) {
-  let arr = [];
+const arr = [];
   if (step > 0) {
     for (let i = start; i <= end; i += step) {
       arr.push(i);
@@ -19,7 +19,7 @@ console.log(range(5, 2));
 console.log("Sum Function: \t\tsum(range(1, 10))");
 function sum(arr) {
   let result = 0;
-  for (let number of arr) {
+  for (const number of arr) {
     result += number;
   }
   return result;
@@ -29,8 +29,8 @@ console.log(sum(range(1, 10)));
 console.log("\n Reversing an Array \n");
 
 function reverseArray(arr) {
-  let reverse = [];
-  for (let item of arr) {
+  const reverse = [];
+  for (const item of arr) {
     reverse.unshift(item);
   }
   return reverse;
@@ -47,7 +47,7 @@ function reverseArrayInPlace(arr) {
   }
 }
 
-let arrayValue = [1, 2, 3, 4, 5];
+const arrayValue = [1, 2, 3, 4, 5];
 reverseArrayInPlace(arrayValue);
 console.log("reverseArrayInPlace([1,2,3,4,5])");
 console.log(arrayValue);
@@ -114,27 +114,25 @@ console.log(nthRecursive(arrayToList([10, 20, 30]), 2));
 
 console.log("\n Deep Equal comparison \n");
 const deepEqual = (objA, objB) => {
+  if (objA === objB) return true;
   if (
-    typeof objA == "object" &&
-    typeof objB == "object" &&
-    objA != null &&
-    objB != null
-  ) {
-    if (Object.keys(objA).length === Object.keys(objB).length) {
-      for (let key of Object.keys(objA)) {
-        if (Object.keys(objB).includes(key)) {
-          if (JSON.stringify(objA[key]) !== JSON.stringify(objB[key])) {
-            return false;
-          }
-        }
-      }
-    }
+    typeof objA != "object" ||
+    objA == null ||
+    typeof objB != "object" ||
+    objB == null
+  )
+    return false;
+  const objKeysA = Object.keys(objA),
+    objKeysB = Object.keys(objB);
+  if (objKeysA.length !== objKeysB.length) return false;
+  for (const key of objKeysA) {
+    if (!objKeysB.includes(key)) return false;
+    return deepEqual(objA[key], objB[key]);
   }
   return true;
 };
-
-console.log('let obj = { here: { is: "an" }, object: 2 };');
-let obj = { here: { is: "an" }, object: 2 };
+console.log('const obj = { here: { is: "an" }, object: 2 };');
+const obj = { here: { is: "an" }, object: 2 };
 console.log("deepEqual(obj, obj)");
 console.log(deepEqual(obj, obj));
 console.log("deepEqual(obj, { here: 1, object: 2 })");
